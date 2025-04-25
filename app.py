@@ -3,6 +3,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.express as px
 
+# Set page config MUST be first Streamlit call
+st.set_page_config(page_title="Python for Health Data - Dummies Guide", layout="wide")
+
 # -- Custom Styles for Colors and Fonts --
 st.markdown(
     """
@@ -66,7 +69,6 @@ def main():
     # Display the custom header
     show_header()
 
-    st.set_page_config(page_title="Python for Health Data - Dummies Guide", layout="wide")
     st.sidebar.title("Navigation")
     page = st.sidebar.radio(
         "Go to", [
@@ -177,7 +179,7 @@ def show_setup():
     st.markdown("---")
     st.subheader("Step 5: Create a Virtual Environment")
     st.code("conda create -n health_data python=3.9 -y && conda activate health_data", language="bash")
-    st.write("This keeps your project dependencies separate and easy to manage.")
+    st.write("This keeps your project dependencies separate and easy to manage.)
     st.markdown("---")
     st.subheader("Step 6: Install Required Libraries")
     st.code("pip install streamlit pandas matplotlib plotly", language="bash")
@@ -232,13 +234,13 @@ plt.title('Daily Cases Over Time')
 plt.xlabel('Date')
 plt.ylabel('Cases')
 plt.grid(True)
-'''
+'''    
     st.code(plot_code, language="python")
     st.subheader("Step 3: Save High-Res Image")
     save_code = '''
 plt.savefig('daily_cases.png', dpi=300, bbox_inches='tight')
 plt.show()
-'''
+'''    
     st.code(save_code, language="python")
     st.markdown("---")
 
@@ -257,7 +259,7 @@ fig = px.line(
 )
 fig.update_layout(template='plotly_white')
 st.plotly_chart(fig, use_container_width=True)
-'''
+'''   
     st.code(interactive_code, language="python")
     st.markdown("---")
 
@@ -281,3 +283,4 @@ def show_download():
 
 if __name__ == "__main__":
     main()
+
