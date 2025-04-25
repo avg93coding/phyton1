@@ -6,9 +6,7 @@ import plotly.express as px
 # Streamlit App: Python for Health Data Mini-eBook (For Absolute Beginners)
 
 def main():
-    st.set_page_config(
-        page_title="Python for Health Data - Dummies Guide", layout="wide"
-    )
+    st.set_page_config(page_title="Python for Health Data - Dummies Guide", layout="wide")
     st.sidebar.title("Navigation")
     page = st.sidebar.radio(
         "Go to", [
@@ -60,9 +58,7 @@ def show_introduction():
 def show_what_is_python():
     st.header("What is Python?")
     st.subheader("Step 1: Define Python")
-    st.write(
-        "Python is a **programming language** used to write instructions that a computer can execute."
-    )
+    st.write("Python is a **programming language** used to write instructions that a computer can execute.")
     st.subheader("Step 2: Why Python?")
     st.write(
         "- Readable syntax (looks like English)",
@@ -71,16 +67,12 @@ def show_what_is_python():
         sep="\n"
     )
     st.subheader("Step 3: Try the Python Shell")
-    st.write(
-        "Open your terminal or command prompt and type `python` (or `python3`)."
-    )
+    st.write("Open your terminal or command prompt and type `python` (or `python3`).")
     st.code(
-        ">>> python",
+        "python --version",
         language="bash"
     )
-    st.write(
-        "Then type: `print('Hello, Python!')` and press Enter. You should see `Hello, Python!` printed back."
-    )
+    st.write("You should see a version number like `Python 3.x.x`.")
     st.markdown("---")
 
 # Section: Why Python?
@@ -134,9 +126,7 @@ def show_setup():
         "conda create -n health_data python=3.9 -y\nconda activate health_data",
         language="bash"
     )
-    st.write(
-        "This keeps your project dependencies separate and easy to manage."
-    )
+    st.write("This keeps your project dependencies separate and easy to manage.")
     st.markdown("---")
     st.subheader("Step 6: Install Required Libraries")
     st.code(
@@ -221,20 +211,23 @@ def show_customize_plots():
         "import matplotlib.pyplot as plt",
         language="python"
     )
+
     st.subheader("Step 2: Plot Data with Style")
-    st.code(
-        "plt.plot(df['date'], df['cases'], color='blue', linewidth=2)
+    plot_code = '''
+plt.plot(df['date'], df['cases'], color='blue', linewidth=2)
 plt.title('Daily Cases Over Time')
 plt.xlabel('Date')
 plt.ylabel('Cases')
 plt.grid(True)
-",language="python"
-    )
+'''
+    st.code(plot_code, language="python")
+
     st.subheader("Step 3: Save High-Res Image")
-    st.code(
-        "plt.savefig('daily_cases.png', dpi=300, bbox_inches='tight')",
-        language="python"
-    )
+    save_code = '''
+plt.savefig('daily_cases.png', dpi=300, bbox_inches='tight')
+plt.show()
+'''
+    st.code(save_code, language="python")
     st.markdown("---")
 
 # Section: Interactive Charts
@@ -247,15 +240,17 @@ def show_interactive():
         language="python"
     )
     st.subheader("Step 2: Create Interactive Figure")
-    st.code(
-        "fig = px.line(df, x='date', y='cases', title='Interactive Trends')",
-        language="python"
-    )
-    st.subheader("Step 3: Display in Streamlit")
-    st.code(
-        "st.plotly_chart(fig, use_container_width=True)",
-        language="python"
-    )
+    interactive_code = '''
+fig = px.line(
+    df,
+    x='date',
+    y='cases',
+    title='Interactive Trends'
+)
+fig.update_layout(template='plotly_white')
+st.plotly_chart(fig, use_container_width=True)
+'''
+    st.code(interactive_code, language="python")
     st.markdown("---")
 
 # Section: Download eBook
