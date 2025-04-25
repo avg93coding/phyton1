@@ -41,7 +41,6 @@ def main():
     elif page == "Download eBook":
         show_download()
 
-# Section: Introduction
 
 def show_introduction():
     st.title("Python for Health Data: Beginners Welcome (Dummies Edition)")
@@ -51,7 +50,6 @@ def show_introduction():
     )
     st.markdown("---")
 
-# Section: What is Python?
 
 def show_what_is_python():
     st.header("What is Python?")
@@ -61,14 +59,13 @@ def show_what_is_python():
     st.markdown("**Key Features:**")
     st.write(
         "- *Easy-to-read syntax* resembling pseudocode",
-        "- *Interpreted* (no compilation step),",
-        "- *Cross-platform* (Windows, MacOS, Linux),",
-        "- *Large ecosystem* of libraries (over 200k packages on PyPI).",
+        "- *Interpreted* (no compilation step)",
+        "- *Cross-platform* (Windows, MacOS, Linux)",
+        "- *Large ecosystem* of libraries (over 200k packages on PyPI)",
         sep="\n"
     )
     st.markdown("---")
 
-# Section: Why Python?
 
 def show_why_python():
     st.header("Why Python for Health Data?")
@@ -89,7 +86,6 @@ def show_why_python():
     )
     st.markdown("---")
 
-# Section: Your First Steps
 
 def show_setup():
     st.header("Your First Steps")
@@ -110,16 +106,10 @@ pip install streamlit pandas matplotlib plotly
         language="bash"
     )
     st.markdown("**3. Launch Jupyter Notebook (optional):**")
-    st.write(
-        "Open your terminal or Anaconda Prompt and run:",
-        "```bash
-jupyter notebook
-```",
-        sep="\n"
-    )
+    st.write("Open your terminal or Anaconda Prompt and run:")
+    st.code("jupyter notebook", language="bash")
     st.markdown("---")
 
-# Section: Starter Commands
 
 def show_starter_commands():
     st.header("Starter Commands")
@@ -139,7 +129,6 @@ df.describe()
     )
     st.markdown("---")
 
-# Section: Understanding Data Types
 
 def show_data_types():
     st.header("Understanding Data Types")
@@ -163,7 +152,6 @@ df['value'] = df['value'].astype(float)
     st.code(type_code, language="python")
     st.markdown("---")
 
-# Section: Customize and Save Plots
 
 def show_customize_plots():
     st.header("Customize and Save Plots")
@@ -187,7 +175,6 @@ plt.show()
     )
     st.markdown("---")
 
-# Section: Interactive Charts
 
 def show_interactive():
     st.header("Interactive Charts")
@@ -207,7 +194,6 @@ st.plotly_chart(fig, use_container_width=True)
     )
     st.markdown("---")
 
-# Section: Download eBook
 
 def show_download():
     st.header("Download the Mini eBook")
@@ -225,5 +211,7 @@ def show_download():
             "PDF guide not found. Please add `health_data_python_guide.pdf` in the app directory."
         )
 
+
 if __name__ == "__main__":
     main()
+
