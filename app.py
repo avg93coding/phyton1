@@ -1419,4 +1419,669 @@ df['age_group'] = pd.cut(
 )
         """)
         
-        # Example with
+# Example with real data from our sample
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.hist(df['cases'], bins=20, edgecolor='black')
+        ax.set_title('Distribución de Casos')
+        ax.set_xlabel('Número de casos')
+        ax.set_ylabel('Frecuencia')
+        st.pyplot(fig)
+        
+        # Show some stats
+        st.write("Estadísticas de casos:")
+        st.write(df['cases'].describe())
+    
+    with datatypes_tabs[1]:
+        st.subheader("Datos Categóricos")
+        st.code("""
+# Contar valores en categorías
+print(df['gender'].value_counts())
+print(df['gender'].value_counts(normalize=True))  # proporciones
+
+# Gráfico de barras para variables categóricas
+plt.figure(figsize=(10, 6))
+sns.countplot(x='region', data=df)
+plt.title('Conteo por Región')
+plt.xticks(rotation=45)
+
+# Tablas de contingencia
+pd.crosstab(df['gender'], df['age_group'])
+
+# One-hot encoding (útil para machine learning)
+dummies = pd.get_dummies(df['region'], prefix='region')
+df = pd.concat([df, dummies], axis=1)
+        """)
+        
+        # Example with real data
+        st.write("Conteo por región:")
+        st.write(df['region'].value_counts())
+        
+        fig, ax = plt.subplots(figsize=(10, 6))
+        region_counts = df['region'].value_counts()
+        ax.bar(region_counts.index, region_counts.values)
+        ax.set_title('Conteo por Región')
+        ax.set_xlabel('Región')
+        ax.set_ylabel('Conteo')
+        plt.xticks(rotation=45)
+        st.pyplot(fig)
+    
+    with datatypes_tabs[2]:
+        st.subheader("Datos de Fechas")
+        st.code("""
+# Convertir a datetime si no lo está ya
+df['date'] = pd.to_datetime(df['date'])
+
+# Extraer componentes de fecha
+df['year'] = df['date'].dt.year
+df['month'] = df['date'].dt.month
+df['day'] = df['date'].dt.day
+df['weekday'] = df['date'].dt.day_name()
+
+# Filtrar por fechas
+enero_2023 = df[(df['date'] >= '2023-01-01') & (df['date'] <= '2023-01-31')]
+
+# Agrupar por componentes de tiempo
+por_mes = df.groupby(df['date'].dt.month)['cases'].sum()
+por_dia_semana = df.groupby(df['date'].dt.day_name())['cases'].mean()
+
+# Resample para diferentes periodicidades
+semanal = df.set_index('date').resample('W').sum()
+mensual = df.set_index('date').resample('M').sum()
+        """)
+        
+        # Example with real data
+        df_dates = df.copy()
+        df_dates['month'] = df_dates['date'].dt.month
+        monthly_data = df_dates.groupby('month')['cases'].sum()
+        
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.plot(monthly_data.index, monthly_data.values, marker='o')
+        ax.set_title('Casos por Mes')
+        ax.set_xlabel('Mes')
+        ax.set_ylabel('Total de Casos')
+        ax.grid(True, alpha=0.3)
+        st.pyplot(fig)
+    
+    with datatypes_tabs[3]:
+        st.subheader("Datos de Texto")
+        st.code("""
+# Supongamos que tenemos una columna de notas médicas
+df['notes'] = df['notes'].str.lower()  # convertir a minúsculas
+
+# Verificar si contiene una palabra clave
+df['contains_follow_up'] = df['notes'].str.contains('follow.?up|seguimiento', regex=True)
+
+# Extraer información con expresiones regulares
+# Por ejemplo, extraer presión arterial con formato 120/80
+df['blood_pressure'] = df['notes'].str.extract(r'(\d{2,3}/\d{2,3})')
+
+# Tokenización básica
+df['words'] = df['notes'].str.split()
+df['word_count'] = df['notes'].str.split().str.len()
+
+# Usando bibliotecas especializadas como NLTK o spaCy para NLP avanzado
+# (Requiere instalación adicional)
+import nltk
+from nltk.corpus import stopwords
+
+# Descargar stopwords
+nltk.download('stopwords')
+stop_words = set(stopwords.words('english'))
+
+# Función para limpiar texto
+def clean_text(text):
+    if isinstance(text, str):
+        tokens = text.lower().split()
+        return ' '.join([word for word in tokens if word not in stop_words])
+    return ""
+
+df['clean_notes'] = df['notes'].apply(clean_text)
+        """)
+        
+        st.write("""
+        Nota: El análisis de texto (NLP) en datos médicos es un campo especializado 
+        que requiere cuidado adicional debido a la privacidad y la terminología específica.
+        """)
+        
+        info_box("""
+        Las notas clínicas a menudo contienen información sensible y terminología médica 
+        específica. Se recomienda usar herramientas especializadas como MedSpaCy o cTAKES 
+        para procesamiento avanzado.
+        """)
+    
+    # Missing values handling
+    st.header("Manejo de Valores Faltantes")
+    
+    missing_code = """
+# Detectar valores faltantes
+print(df.isnull().sum())
+
+# Visualizar valores faltantes
+import missingno as msno
+msno.matrix(df)
+plt.title('Patrón de Valores Faltantes')
+
+# Opciones para manejar valores faltantes:
+
+# 1. Eliminar filas con valores faltantes
+df_clean = df.dropna()
+
+# 2. Eliminar solo si faltan en ciertas columnas
+df_clean = df.dropna(subset=['age', 'gender'])
+
+# 3. Rellenar con un valor constante
+df['age'] = df['age'].fillna(0)
+df['gender'] = df['gender'].fillna('Unknown')
+
+# 4. Rellenar con estadísticas
+df['age'] = df['age'].fillna(df['age'].mean())
+df['cholesterol'] = df['cholesterol'].fillna(df['cholesterol'].median())
+
+# 5. Método de relleno hacia adelante/atrás (útil con series temporales)
+df['cases'] = df['cases'].fillna(method='ffill')  # forward fill
+
+# 6. Interpolación
+df['temperature'] = df['temperature'].interpolate(method='linear')
+    """
+    
+    with st.expander("Ver código para manejo de valores faltantes"):
+        st.code(missing_code)
+        
+    success_box("""
+    Recuerda: Los valores faltantes en datos de salud pueden tener significados clínicos importantes.
+    A veces, el hecho de que un dato esté ausente es informativo en sí mismo.
+    """)
+
+# Section: Customize and save plots
+def show_customize_plots(df):
+    st.title("Personalizar y Guardar Gráficos")
+    
+    st.write("""
+    Las visualizaciones efectivas son cruciales para comunicar hallazgos en datos de salud.
+    Aprende a personalizar gráficos y crear visualizaciones de calidad para publicaciones.
+    """)
+    
+    # Basic customization with matplotlib
+    st.header("Personalización Básica con Matplotlib")
+    
+    basic_custom_code = """
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+
+# Configurar el estilo
+plt.style.use('seaborn-v0_8-whitegrid')  # Otros: 'ggplot', 'fivethirtyeight'
+
+# Crear figura y ejes
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Graficar datos
+ax.plot(df['date'], df['cases'], color='#E76F51', linewidth=2, marker='o', 
+        markersize=4, alpha=0.7, label='Casos')
+ax.plot(df['date'], df['recovered'], color='#2A9D8F', linewidth=2, marker='s', 
+        markersize=4, alpha=0.7, label='Recuperados')
+
+# Añadir títulos y etiquetas
+ax.set_title('Evolución de Casos COVID-19', fontsize=16, pad=20)
+ax.set_xlabel('Fecha', fontsize=12)
+ax.set_ylabel('Número de Casos', fontsize=12)
+
+# Personalizar ejes
+ax.tick_params(axis='both', which='major', labelsize=10)
+ax.set_ylim(bottom=0)  # Empezar desde 0
+
+# Añadir grid
+ax.grid(True, linestyle='--', alpha=0.7)
+
+# Añadir leyenda
+ax.legend(loc='upper left', frameon=True, fontsize=10)
+
+# Añadir anotaciones
+max_date = df.loc[df['cases'].idxmax(), 'date']
+max_cases = df['cases'].max()
+ax.annotate(f'Pico: {max_cases}', 
+            xy=(max_date, max_cases),
+            xytext=(10, -30),
+            textcoords='offset points',
+            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=.2'))
+
+# Ajustar layout
+plt.tight_layout()
+
+# Guardar en diferentes formatos y resoluciones
+plt.savefig('evolucion_covid.png', dpi=300, bbox_inches='tight')
+plt.savefig('evolucion_covid.pdf', bbox_inches='tight')  # Para publicación
+plt.savefig('evolucion_covid.svg')  # Vectorial para edición
+    """
+    
+    st.code(basic_custom_code)
+    
+    # Example plot with customization
+    fig, ax = plt.subplots(figsize=(10, 6))
+    plt.style.use('seaborn-v0_8-whitegrid')
+    
+    ax.plot(df['date'], df['cases'], color='#E76F51', linewidth=2, marker='o', 
+            markersize=4, alpha=0.7, label='Casos')
+    ax.plot(df['date'], df['recovered'], color='#2A9D8F', linewidth=2, marker='s', 
+            markersize=4, alpha=0.7, label='Recuperados')
+    
+    ax.set_title('Evolución de Casos COVID-19', fontsize=16, pad=20)
+    ax.set_xlabel('Fecha', fontsize=12)
+    ax.set_ylabel('Número de Casos', fontsize=12)
+    
+    ax.tick_params(axis='both', which='major', labelsize=10)
+    ax.set_ylim(bottom=0)
+    
+    ax.grid(True, linestyle='--', alpha=0.7)
+    ax.legend(loc='upper left', frameon=True, fontsize=10)
+    
+    max_idx = df['cases'].idxmax()
+    max_date = df.loc[max_idx, 'date']
+    max_cases = df['cases'].max()
+    
+    ax.annotate(f'Pico: {max_cases}',
+                xy=(max_date, max_cases),
+                xytext=(10, -30),
+                textcoords='offset points',
+                arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=.2'))
+    
+    plt.tight_layout()
+    st.pyplot(fig)
+    
+    # Advanced visualization with Seaborn
+    st.header("Visualización Avanzada con Seaborn")
+    
+    st.write("""
+    Seaborn es una biblioteca basada en matplotlib que facilita la creación de gráficos estadísticos atractivos.
+    """)
+    
+    seaborn_code = """
+# Configurar el estilo de seaborn
+sns.set_theme(style="whitegrid", palette="deep", font_scale=1.1)
+
+# Gráfico de barras con intervalos de confianza
+plt.figure(figsize=(10, 6))
+sns.barplot(x='region', y='cases', data=df)
+plt.title('Casos por Región con Intervalos de Confianza 95%')
+plt.xticks(rotation=45)
+plt.tight_layout()
+
+# Violinplot para distribuciones por grupo
+plt.figure(figsize=(12, 7))
+sns.violinplot(x='age_group', y='hospitalized', hue='gender', split=True, data=df)
+plt.title('Distribución de Hospitalizaciones por Edad y Género')
+plt.tight_layout()
+
+# Heatmap para correlaciones
+correlations = df.select_dtypes(include=[np.number]).corr()
+plt.figure(figsize=(10, 8))
+sns.heatmap(correlations, annot=True, cmap='coolwarm', linewidths=0.5, center=0)
+plt.title('Matriz de Correlación de Variables Numéricas')
+plt.tight_layout()
+
+# FacetGrid para múltiples gráficos por categoría
+g = sns.FacetGrid(df, col="region", col_wrap=3, height=4, aspect=1.2)
+g.map(sns.histplot, "cases", bins=20, kde=True)
+g.set_axis_labels("Casos", "Frecuencia")
+g.set_titles("Región: {col_name}")
+g.tight_layout()
+    """
+    
+    st.code(seaborn_code)
+    
+    # Example seaborn plot
+    sns.set_theme(style="whitegrid", palette="deep", font_scale=1.1)
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.barplot(x='region', y='cases', data=df, ax=ax)
+    ax.set_title('Casos por Región con Intervalos de Confianza 95%')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    st.pyplot(fig)
+    
+    # Multiple plots layout
+    st.header("Layouts con Múltiples Gráficos")
+    
+    multipanel_code = """
+# Crear figura con subplots
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+# Gráfico 1: Evolución temporal
+axes[0, 0].plot(df['date'], df['cases'], color='crimson')
+axes[0, 0].set_title('Evolución de Casos')
+axes[0, 0].tick_params(axis='x', rotation=45)
+
+# Gráfico 2: Distribución
+axes[0, 1].hist(df['cases'], bins=20, color='navy', alpha=0.7)
+axes[0, 1].set_title('Distribución de Casos')
+
+# Gráfico 3: Barras por región
+region_data = df.groupby('region')['cases'].sum().sort_values()
+axes[1, 0].barh(region_data.index, region_data.values, color='forestgreen')
+axes[1, 0].set_title('Casos por Región')
+
+# Gráfico 4: Scatter plot
+axes[1, 1].scatter(df['cases'], df['hospitalized'], alpha=0.5, color='darkorange')
+axes[1, 1].set_title('Hospitalizaciones vs Casos')
+axes[1, 1].set_xlabel('Casos')
+axes[1, 1].set_ylabel('Hospitalizaciones')
+
+# Ajustar layout
+plt.tight_layout()
+plt.subplots_adjust(top=0.9)
+fig.suptitle('Dashboard COVID-19', fontsize=16)
+
+# Guardar
+plt.savefig('covid_dashboard.png', dpi=300, bbox_inches='tight')
+    """
+    
+    st.code(multipanel_code)
+    
+    # Example multipanel plot
+    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+    
+    # Plot 1: Time series
+    axes[0, 0].plot(df['date'], df['cases'], color='crimson')
+    axes[0, 0].set_title('Evolución de Casos')
+    axes[0, 0].tick_params(axis='x', rotation=45)
+    
+    # Plot 2: Distribution
+    axes[0, 1].hist(df['cases'], bins=20, color='navy', alpha=0.7)
+    axes[0, 1].set_title('Distribución de Casos')
+    
+    # Plot 3: Bar by region
+    region_data = df.groupby('region')['cases'].sum().sort_values()
+    axes[1, 0].barh(region_data.index, region_data.values, color='forestgreen')
+    axes[1, 0].set_title('Casos por Región')
+    
+    # Plot 4: Scatter plot
+    axes[1, 1].scatter(df['cases'], df['hospitalized'], alpha=0.5, color='darkorange')
+    axes[1, 1].set_title('Hospitalizaciones vs Casos')
+    axes[1, 1].set_xlabel('Casos')
+    axes[1, 1].set_ylabel('Hospitalizaciones')
+    
+    plt.tight_layout()
+    plt.subplots_adjust(top=0.9)
+    fig.suptitle('Dashboard COVID-19', fontsize=16)
+    
+    st.pyplot(fig)
+    
+    # Tips for publication quality figures
+    st.header("Tips para Figuras de Calidad de Publicación")
+    
+    tips_cols = st.columns(2)
+    
+    with tips_cols[0]:
+        st.markdown("""
+        ### Formato y Resolución
+        
+        - Usa **formatos vectoriales** (PDF, SVG, EPS) para publicaciones
+        - Para web, usa PNG con alta resolución (300+ dpi)
+        - Dimensiones estándar: 8.5 x 11 pulgadas o tamaños de revista
+        - Configura figura desde el inicio con tamaño correcto
+        
+        ### Tipografía y Estilo
+        
+        - Fuentes sans-serif como Arial o Helvetica
+        - Tamaño de fuente legible (12pt mínimo)
+        - Consistencia en colores y estilos
+        - Paletas de colores amigables para daltonismo
+        """)
+    
+    with tips_cols[1]:
+        st.markdown("""
+        ### Contenido y Claridad
+        
+        - Simplicidad: elimina elementos decorativos innecesarios
+        - Sin chartjunk (gráficos 3D innecesarios, etc.)
+        - Etiquetas claras y concisas
+        - Leyendas informativas
+        
+        ### Reproductibilidad
+        
+        - Guarda código que genera gráficos
+        - Usa semillas aleatorias para reproducibilidad
+        - Documenta transformaciones de datos
+        - Considera usar notebooks para encapsular análisis
+        """)
+    
+    # Style galleries
+    st.header("Galería de Estilos")
+    
+    gallery_code = """
+# Ver estilos disponibles
+print(plt.style.available)
+
+# Mostrar ejemplo con cada estilo
+styles = ['default', 'seaborn-v0_8', 'ggplot', 'bmh', 'fivethirtyeight']
+fig, axes = plt.subplots(len(styles), 1, figsize=(10, 3*len(styles)))
+
+for i, style in enumerate(styles):
+    with plt.style.context(style):
+        axes[i].plot(df['date'][:50], df['cases'][:50])
+        axes[i].set_title(f"Estilo: {style}")
+        
+plt.tight_layout()
+    """
+    
+    with st.expander("Ver código para probar diferentes estilos"):
+        st.code(gallery_code)
+    
+    # Example gallery (simplified)
+    styles = ['default', 'seaborn-v0_8', 'ggplot']
+    fig, axes = plt.subplots(len(styles), 1, figsize=(10, 3*len(styles)))
+    
+    for i, style in enumerate(styles):
+        with plt.style.context(style):
+            axes[i].plot(df['date'][:50], df['cases'][:50])
+            axes[i].set_title(f"Estilo: {style}")
+            
+    plt.tight_layout()
+    st.pyplot(fig)
+    
+    info_box("""
+    Para ver todos los estilos disponibles en tu instalación de matplotlib, ejecuta `plt.style.available`.
+    """)
+
+# Section: Interactive visualizations
+def show_interactive(df):
+    st.title("Gráficos Interactivos")
+    
+    st.write("""
+    Los gráficos interactivos permiten a los usuarios explorar datos complejos, encontrar patrones,
+    y personalizar la visualización según sus necesidades. Plotly es una de las bibliotecas más
+    potentes para crear visualizaciones interactivas en Python.
+    """)
+    
+    # Basic Plotly Express
+    st.header("Plotly Express: La Manera Más Rápida")
+    
+    plotly_express_code = """
+import plotly.express as px
+import pandas as pd
+
+# Gráfico de líneas interactivo
+fig = px.line(
+    df, 
+    x='date', 
+    y=['cases', 'recovered', 'hospitalized'],
+    title='Evolución Temporal COVID-19',
+    labels={'value': 'Número', 'variable': 'Categoría'},
+    line_shape='spline',
+    render_mode='svg'
+)
+
+# Personalización básica
+fig.update_layout(
+    hovermode='x unified',
+    legend_title='Indicadores',
+    xaxis_title='Fecha',
+    yaxis_title='Número de Casos',
+    plot_bgcolor='rgba(240, 240, 240, 0.8)'
+)
+
+# Mostrar
+fig.show()
+    """
+    
+    st.code(plotly_express_code)
+    
+    # Interactive Plotly Express example
+    fig = px.line(
+        df, 
+        x='date', 
+        y=['cases', 'recovered', 'hospitalized'],
+        title='Evolución Temporal COVID-19',
+        labels={'value': 'Número', 'variable': 'Categoría'},
+        line_shape='spline'
+    )
+    
+    fig.update_layout(
+        hovermode='x unified',
+        legend_title='Indicadores',
+        xaxis_title='Fecha',
+        yaxis_title='Número de Casos',
+        plot_bgcolor='rgba(240, 240, 240, 0.8)'
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Advanced Plotly
+    st.header("Gráficos Avanzados con Plotly")
+    
+    # Example visualizations with tabs
+    plotly_tabs = st.tabs(["Histograma Interactivo", "Gráfico de Dispersión", "Mapa de Calor", "Dashboard Personalizado"])
+    
+    with plotly_tabs[0]:
+        st.subheader("Histograma Interactivo")
+        
+        hist_code = """
+import plotly.graph_objects as go
+
+# Crear histograma
+fig = go.Figure()
+
+fig.add_trace(go.Histogram(
+    x=df['cases'],
+    nbinsx=25,
+    marker_color='#3498db',
+    opacity=0.7,
+    name='Casos'
+))
+
+# Añadir línea de densidad KDE
+from scipy import stats
+kde_x = np.linspace(df['cases'].min(), df['cases'].max(), 1000)
+kde = stats.gaussian_kde(df['cases'].dropna())
+kde_y = kde(kde_x)
+
+fig.add_trace(go.Scatter(
+    x=kde_x, 
+    y=kde_y * df['cases'].count() * (df['cases'].max() - df['cases'].min()) / 25,
+    mode='lines', 
+    name='Densidad',
+    line=dict(color='red', width=2)
+))
+
+# Personalización
+fig.update_layout(
+    title='Distribución de Casos COVID-19',
+    xaxis_title='Número de Casos',
+    yaxis_title='Frecuencia',
+    bargap=0.1,
+    template='plotly_white'
+)
+
+# Añadir líneas verticales para estadísticas
+stats = df['cases'].describe()
+fig.add_vline(x=stats['mean'], line_dash='dash', line_color='green', annotation_text='Media')
+fig.add_vline(x=stats['50%'], line_dash='dash', line_color='orange', annotation_text='Mediana')
+
+fig.show()
+        """
+        
+        st.code(hist_code)
+        
+        # Example histogram
+        fig = go.Figure()
+        
+        fig.add_trace(go.Histogram(
+            x=df['cases'],
+            nbinsx=25,
+            marker_color='#3498db',
+            opacity=0.7,
+            name='Casos'
+        ))
+        
+        # Add KDE density line
+        kde_x = np.linspace(df['cases'].min(), df['cases'].max(), 1000)
+        kde = stats.gaussian_kde(df['cases'].dropna())
+        kde_y = kde(kde_x)
+        
+        fig.add_trace(go.Scatter(
+            x=kde_x, 
+            y=kde_y * df['cases'].count() * (df['cases'].max() - df['cases'].min()) / 25,
+            mode='lines', 
+            name='Densidad',
+            line=dict(color='red', width=2)
+        ))
+        
+        # Customization
+        fig.update_layout(
+            title='Distribución de Casos COVID-19',
+            xaxis_title='Número de Casos',
+            yaxis_title='Frecuencia',
+            bargap=0.1,
+            template='plotly_white'
+        )
+        
+        # Add vertical lines for statistics
+        stats = df['cases'].describe()
+        fig.add_vline(x=stats['mean'], line_dash='dash', line_color='green', annotation_text='Media')
+        fig.add_vline(x=stats['50%'], line_dash='dash', line_color='orange', annotation_text='Mediana')
+        
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with plotly_tabs[1]:
+        st.subheader("Gráfico de Dispersión con Dimensiones Adicionales")
+        
+        scatter_code = """
+fig = px.scatter(
+    df, 
+    x='cases', 
+    y='hospitalized',
+    color='region',
+    size='tests',
+    hover_name='date',
+    size_max=15,
+    opacity=0.7,
+    title='Relación entre Casos, Hospitalizaciones y Pruebas por Región',
+    labels={
+        'cases': 'Casos',
+        'hospitalized': 'Hospitalizaciones',
+        'tests': 'Pruebas Realizadas',
+        'region': 'Región'
+    }
+)
+
+fig.update_layout(
+    template='plotly_white',
+    legend_title='Región',
+    xaxis=dict(showgrid=True),
+    yaxis=dict(showgrid=True)
+)
+
+# Añadir línea de tendencia
+fig.add_shape(
+    type="line",
+    line=dict(color="red", width=2, dash="dot"),
+    x0=df['cases'].min(),
+    y0=df['cases'].min() * df['hospitalized'].mean() / df['cases'].mean(),
+    x1=df['cases'].max(),
+    y1=df['cases'].max() * df['hospitalized'].mean() / df['cases'].mean()
+)
+
+fig.show()
+        """
+        
