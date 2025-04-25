@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Entorno virtual
+venv/
+env/
+
+# IDEs y SO
+.vscode/
+.DS_Store
