@@ -1000,7 +1000,11 @@ print(f"Colesterol promedio: {promedio_colesterol:.2f} mg/dL")
     
     st.write("Las funciones permiten reutilizar código y organizar mejor tus scripts:")
     
-    st.code("""
+# Paso 3: Crear Funciones
+st.header("Paso 3: Crear Funciones")
+st.write("Las funciones permiten reutilizar código y organizar mejor tus scripts:")
+
+st.code('''
 # Definir una función para calcular IMC
 def calcular_imc(peso, altura):
     """
@@ -1058,33 +1062,14 @@ for paciente in pacientes_datos:
     categoria = interpretar_imc(imc)
     
     print(f"{nombre}: IMC = {imc:.2f}, Categoría: {categoria}")
-    """)
-    
-    st.subheader("Resultado:")
-    st.code("""
+''', language="python")
+
+st.subheader("Resultado:")
+st.code('''
 Juan Pérez: IMC = 27.92, Categoría: Sobrepeso
 María López: IMC = 22.77, Categoría: Peso normal
 Carlos Gómez: IMC = 27.40, Categoría: Sobrepeso
-    """, language="text")
-    
-    # Next steps
-    st.markdown("---")
-    st.header("Próximos Pasos")
-    
-    st.write("""
-    Ahora que conoces los fundamentos de Python, en las siguientes secciones aprenderás:
-    
-    1. Cómo cargar datos reales con pandas
-    2. Cómo hacer análisis estadísticos básicos
-    3. Cómo crear visualizaciones con matplotlib y plotly
-    
-    Asegúrate de practicar estos conceptos básicos antes de avanzar.
-    """)
-    
-    success_box("""
-    ¡Felicidades! Has escrito tu primer script Python para análisis de datos de salud. 
-    Aunque es simple, contiene muchos de los conceptos fundamentales que usarás constantemente.
-    """)
+''', language="text")
 
 # Section: Load and preview data
 def show_load_preview(df):
