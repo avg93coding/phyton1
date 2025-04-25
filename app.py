@@ -621,45 +621,65 @@ Analizando datos de Carlos
 # Section: Why Python?
 def show_why_python():
     st.title("¿Por qué Python para Datos de Salud?")
-    
-    # Comparison with other tools
+
+    # Comparación con otras herramientas
     st.subheader("Comparación con otras herramientas")
-    
     comparison_data = {
-        "Criterio": ["Curva de aprendizaje", "Flexibilidad", "Reproducibilidad", "Visualización", "Análisis estadístico", "Automatización", "Costo"],
-        "Python": ["Moderada", "Muy alta", "Excelente", "Excelente", "Muy bueno", "Excelente", "Gratis"],
-        "R": ["Moderada", "Alta", "Excelente", "Muy buena", "Excelente", "Buena", "Gratis"],
-        "Excel": ["Baja", "Limitada", "Limitada", "Básica", "Básica", "Limitada", "Pagado"],
-        "SPSS": ["Baja", "Limitada", "Buena", "Buena", "Excelente", "Limitada", "Muy costoso"]
+        "Criterio": ["Curva de aprendizaje", "Flexibilidad", "Reproducibilidad",
+                     "Visualización", "Análisis estadístico", "Automatización", "Costo"],
+        "Python":         ["Moderada", "Muy alta", "Excelente", "Excelente", "Muy bueno", "Excelente", "Gratis"],
+        "R":              ["Moderada", "Alta",    "Excelente", "Muy buena","Excelente", "Buena",     "Gratis"],
+        "Excel":          ["Baja",     "Limitada","Limitada",  "Básica",  "Básica",   "Limitada",  "Pagado"],
+        "SPSS":           ["Baja",     "Limitada","Buena",     "Buena",   "Excelente","Limitada",  "Muy costoso"]
     }
-    
-    comparison_df = pd.DataFrame(comparison_data)
-    st.table(comparison_df.set_index("Criterio"))
-    
+    df = pd.DataFrame(comparison_data)
+    st.table(df.set_index("Criterio"))
     st.markdown("---")
-    
-    # Benefits visualized
+
+    # Beneficios para Profesionales de la Salud
     st.subheader("Beneficios para Profesionales de la Salud")
-    
     col1, col2 = st.columns([2, 1])
-    
+
     with col1:
         benefits = {
-            "Ahorro de tiempo": 85,
-            "Reproducibilidad": 95,
-            "Análisis complejos": 90,
-            "Automatización": 80,
-            "Visualización avanzada": 85
+            "Ahorro de tiempo":     85,
+            "Reproducibilidad":      95,
+            "Análisis complejos":    90,
+            "Automatización":        80,
+            "Visualización avanzada":85
         }
-        
-        fig = go.Figure([go.Bar(
-            x=list(benefits.values()),
-            y=list(benefits.keys()),
-            orientation='h',
-            marker=dict(
-                color=['#2A9D8F', '#E9C46A', '#F4A261', '#E76F51', '#264653'],
-                line=dict(color='rgba(0, 0, 0, 0.1)', width=1)
+        fig = go.Figure([
+            go.Bar(
+                x=list(benefits.values()),
+                y=list(benefits.keys()),
+                orientation='h',
+                marker=dict(
+                    color=['#2A9D8F','#E9C46A','#F4A261','#E76F51','#264653'],
+                    line=dict(color='rgba(0,0,0,0.1)', width=1)
+                )
             )
-        )])
-        
+        ])
         fig.update_layout(
+            title="Impacto clave de Python",
+            xaxis_title="Puntuación (%)",
+            yaxis=dict(autorange="reversed"),
+            template="plotly_white",
+            margin=dict(l=0, r=10, t=30, b=0)
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    with col2:
+        st.markdown("""
+- **Ahorro de tiempo**  
+  Automatiza tareas repetitivas.  
+- **Reproducibilidad**  
+  Comparte tu código y resultados.  
+- **Análisis complejos**  
+  Fácil con librerías como Pandas.  
+- **Automatización**  
+  Genera reportes automáticamente.  
+- **Visualización avanzada**  
+  Gráficos dinámicos y personalizables.
+        """)
+
+    st.markdown("---")
