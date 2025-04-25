@@ -3,9 +3,69 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.express as px
 
-# Streamlit App: Python for Health Data Mini-eBook (For Absolute Beginners)
+# -- Custom Styles for Colors and Fonts --
+st.markdown(
+    """
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+    html, body, [class*="css"] {
+        font-family: 'Roboto', sans-serif;
+    }
+    /* Header styles */
+    .header-container {
+        width: 100%;
+        text-align: center;
+        padding: 10px 0;
+    }
+    .header-container h1 {
+        margin: 0;
+        font-size: 1.8rem;
+        color: #005B96;
+    }
+    .header-container hr {
+        width: 50px;
+        border: 2px solid #F4A261;
+        margin: 8px auto;
+    }
+    .header-container h4 {
+        margin: 0;
+        color: #2A9D8F;
+    }
+    /* Sidebar styling */
+    .stSidebar {
+        background-color: #F9FAFC;
+    }
+    .css-1q8dd3e p {
+        color: #6E6E6E;
+    }
+    /* Code block background */
+    code {
+        background-color: #F4F4F4 !important;
+        color: #333 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
+# Function to show header on every page
+def show_header():
+    st.markdown(
+        """
+        <div class="header-container">
+            <h1>Aura Victoria Gutiérrez</h1>
+            <hr />
+            <h4>MD, Clinical Epidemiologist</h4>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+# Main app function
 def main():
+    # Display the custom header
+    show_header()
+
     st.set_page_config(page_title="Python for Health Data - Dummies Guide", layout="wide")
     st.sidebar.title("Navigation")
     page = st.sidebar.radio(
@@ -45,20 +105,20 @@ def main():
         show_download()
 
 # Section: Introduction
-
 def show_introduction():
-    st.title("Python for Health Data: Step-by-Step for Absolute Beginners")
-    st.markdown(
+    st.header("Introduction")
+    st.write(
         "**No jargon, no assumptions.** In this guide, each section is broken into tiny steps that anyone can follow—from installing Python to building interactive charts."
     )
     st.markdown("---")
 
 # Section: What is Python?
-
 def show_what_is_python():
     st.header("What is Python?")
     st.subheader("Step 1: Define Python")
-    st.write("Python is a **programming language** used to write instructions that a computer can execute.")
+    st.write(
+        "Python is a **programming language** used to write instructions that a computer can execute."
+    )
     st.subheader("Step 2: Why Python?")
     st.write(
         "- Readable syntax (looks like English)",
@@ -67,16 +127,14 @@ def show_what_is_python():
         sep="\n"
     )
     st.subheader("Step 3: Try the Python Shell")
-    st.write("Open your terminal or command prompt and type `python` (or `python3`).")
-    st.code(
-        "python --version",
-        language="bash"
+    st.write(
+        "Open your terminal or command prompt and type `python` (or `python3`). Then type:`print('Hello, Python!')`"
     )
+    st.code("python --version", language="bash")
     st.write("You should see a version number like `Python 3.x.x`.")
     st.markdown("---")
 
 # Section: Why Python?
-
 def show_why_python():
     st.header("Why Python for Health Data?")
     st.subheader("Step 1: Data Tools Built-In")
@@ -88,7 +146,6 @@ def show_why_python():
     st.markdown("---")
 
 # Section: Setup Environment
-
 def show_setup():
     st.header("Setup Your Python Environment")
     st.subheader("Step 1: Open a Terminal or Command Prompt")
@@ -108,10 +165,7 @@ def show_setup():
     )
     st.markdown("---")
     st.subheader("Step 3: Verify Python Installation")
-    st.code(
-        "python --version",
-        language="bash"
-    )
+    st.code("python --version", language="bash")
     st.write("You should see something like `Python 3.9.7`.")
     st.markdown("---")
     st.subheader("Step 4: Install Anaconda (Recommended)")
@@ -122,96 +176,55 @@ def show_setup():
     )
     st.markdown("---")
     st.subheader("Step 5: Create a Virtual Environment")
-    st.code(
-        "conda create -n health_data python=3.9 -y\nconda activate health_data",
-        language="bash"
-    )
+    st.code("conda create -n health_data python=3.9 -y && conda activate health_data", language="bash")
     st.write("This keeps your project dependencies separate and easy to manage.")
     st.markdown("---")
     st.subheader("Step 6: Install Required Libraries")
-    st.code(
-        "pip install streamlit pandas matplotlib plotly",
-        language="bash"
-    )
+    st.code("pip install streamlit pandas matplotlib plotly", language="bash")
     st.write("Now you're ready to run Python data scripts and Streamlit apps.")
     st.markdown("---")
 
 # Section: Your First Script
-
 def show_hello_world():
     st.header("Your First Python Script")
     st.subheader("Step 1: Create a new file")
     st.write("In your project folder, create `hello.py` with the following line:")
-    st.code(
-        "print('Hello, World!')",
-        language="python"
-    )
+    st.code("print('Hello, World!')", language="python")
     st.subheader("Step 2: Run the script")
     st.write("In your terminal, navigate to the folder and type:")
-    st.code(
-        "python hello.py",
-        language="bash"
-    )
+    st.code("python hello.py", language="bash")
     st.write("You should see `Hello, World!` printed.")
     st.markdown("---")
 
 # Section: Load & Preview Data
-
 def show_load_preview():
     st.header("Load & Preview Data")
     st.subheader("Step 1: Import Pandas")
-    st.code(
-        "import pandas as pd",
-        language="python"
-    )
+    st.code("import pandas as pd", language="python")
     st.subheader("Step 2: Read a CSV File")
-    st.code(
-        "df = pd.read_csv('data.csv')",
-        language="python"
-    )
+    st.code("df = pd.read_csv('data.csv')", language="python")
     st.subheader("Step 3: Preview with head()")
-    st.code(
-        "df.head()  # Display first 5 rows",
-        language="python"
-    )
+    st.code("df.head()  # Display first 5 rows", language="python")
     st.subheader("Step 4: Summary Stats")
-    st.code(
-        "df.describe()  # Summary of numeric columns",
-        language="python"
-    )
+    st.code("df.describe()  # Summary of numeric columns", language="python")
     st.markdown("---")
 
 # Section: Understanding Data Types
-
 def show_data_types():
     st.header("Understanding Data Types")
     st.subheader("Step 1: Check Column Types")
-    st.code(
-        "df.dtypes",
-        language="python"
-    )
+    st.code("df.dtypes", language="python")
     st.subheader("Step 2: Convert to Datetime")
-    st.code(
-        "df['date'] = pd.to_datetime(df['date'])",
-        language="python"
-    )
+    st.code("df['date'] = pd.to_datetime(df['date'])", language="python")
     st.subheader("Step 3: Convert Strings to Numbers")
-    st.code(
-        "df['value'] = df['value'].astype(float)",
-        language="python"
-    )
+    st.code("df['value'] = df['value'].astype(float)", language="python")
     st.markdown("---")
 
 # Section: Customize & Save Plots
-
 def show_customize_plots():
     st.header("Customize & Save Plots")
     st.subheader("Step 1: Import Matplotlib")
-    st.code(
-        "import matplotlib.pyplot as plt",
-        language="python"
-    )
-
+    st.code("import matplotlib.pyplot as plt", language="python")
     st.subheader("Step 2: Plot Data with Style")
     plot_code = '''
 plt.plot(df['date'], df['cases'], color='blue', linewidth=2)
@@ -221,7 +234,6 @@ plt.ylabel('Cases')
 plt.grid(True)
 '''
     st.code(plot_code, language="python")
-
     st.subheader("Step 3: Save High-Res Image")
     save_code = '''
 plt.savefig('daily_cases.png', dpi=300, bbox_inches='tight')
@@ -231,14 +243,10 @@ plt.show()
     st.markdown("---")
 
 # Section: Interactive Charts
-
 def show_interactive():
     st.header("Interactive Charts")
     st.subheader("Step 1: Import Plotly Express")
-    st.code(
-        "import plotly.express as px",
-        language="python"
-    )
+    st.code("import plotly.express as px", language="python")
     st.subheader("Step 2: Create Interactive Figure")
     interactive_code = '''
 fig = px.line(
@@ -254,7 +262,6 @@ st.plotly_chart(fig, use_container_width=True)
     st.markdown("---")
 
 # Section: Download eBook
-
 def show_download():
     st.header("Download the Full eBook")
     st.subheader("Step 1: Place PDF in Directory")
@@ -274,4 +281,3 @@ def show_download():
 
 if __name__ == "__main__":
     main()
-
