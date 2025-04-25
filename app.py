@@ -179,7 +179,7 @@ def show_setup():
     st.markdown("---")
     st.subheader("Step 5: Create a Virtual Environment")
     st.code("conda create -n health_data python=3.9 -y && conda activate health_data", language="bash")
-    st.write("This keeps your project dependencies separate and easy to manage."))
+    st.write("This keeps your project dependencies separate and easy to manage.")
     st.markdown("---")
     st.subheader("Step 6: Install Required Libraries")
     st.code("pip install streamlit pandas matplotlib plotly", language="bash")
@@ -283,3 +283,4 @@ def show_download():
 
 if __name__ == "__main__":
     main()
+
