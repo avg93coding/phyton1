@@ -41,62 +41,61 @@ def main():
     elif page == "Download eBook":
         show_download()
 
+# Section: Introduction
 
 def show_introduction():
-    st.title("Python for Health Data: Beginners Welcome (Dummies Edition)")
+    st.title("Python for Health Data: Step-by-Step (Dummies Edition)")
     st.markdown(
-        "Welcome to the ultimate beginner's guide for using Python in health and epidemiology data visualization! "
-        "This interactive mini-book will walk you through each concept step by step, with clear examples and exercises."
+        "Welcome to the most detailed, step-by-step guide for using Python in health and epidemiology data visualization! "
+        "Each section breaks down tasks into clear steps you can follow instantly."
     )
     st.markdown("---")
 
+# Section: What is Python?
 
 def show_what_is_python():
     st.header("What is Python?")
-    st.markdown(
-        "Python is a versatile, high-level programming language used worldwide in data science, web development, automation, and more."
-    )
-    st.markdown("**Key Features:**")
+    st.subheader("Step 1: Understand the Language")
+    st.write("Python is a high-level, interpreted programming language used for data analysis, web apps, automation, and more.")
+    
+    st.subheader("Step 2: Key Characteristics")
     st.write(
-        "- *Easy-to-read syntax* resembling pseudocode",
-        "- *Interpreted* (no compilation step)",
-        "- *Cross-platform* (Windows, MacOS, Linux)",
-        "- *Large ecosystem* of libraries (over 200k packages on PyPI)",
-        sep="\n"
+        "- *Easy-to-read syntax* resembling pseudocode", 
+        "- *Interpreted* (no compile step needed)", 
+        "- *Cross-platform* (runs on Windows, Mac, Linux)", 
+        "- *Extensive ecosystem* with thousands of libraries", sep="\n"
     )
+
+    st.subheader("Step 3: Try Your First Command")
+    st.write("Open your terminal or Anaconda Prompt and type:")
+    st.code("python --version", language="bash")
+    st.write("You should see a version number like `Python 3.x.x`.")
     st.markdown("---")
 
+# Section: Why Python?
 
 def show_why_python():
     st.header("Why Python for Health Data?")
-    st.markdown("**Benefits:**")
-    st.write(
-        "1. Robust data tools: Pandas, NumPy, SciPy for cleaning & analysis",
-        "2. Visualization libraries: Matplotlib, Seaborn, Plotly for static & interactive plots",
-        "3. Reproducibility: share your code/notebooks with colleagues",
-        "4. Integration: connect to databases (SQL), APIs (FHIR), and other languages",
-        sep="\n"
-    )
-    st.markdown("**Real-world examples:**")
-    st.write(
-        "- COVID-19 dashboards built with Plotly Dash",
-        "- Epidemiology analyses using Jupyter Notebooks",
-        "- Automated reporting via scripts and cron jobs",
-        sep="\n"
-    )
+    st.subheader("Step 1: Leverage Data Libraries")
+    st.write("Python offers robust tools like Pandas, NumPy, and SciPy for data cleaning and analysis.")
+
+    st.subheader("Step 2: Visualize with Ease")
+    st.write("Use Matplotlib, Seaborn, and Plotly to create publication-quality static and interactive plots.")
+
+    st.subheader("Step 3: Share & Reproduce")
+    st.write("Write code in Jupyter Notebooks or apps in Streamlit to share workflows and results seamlessly.")
     st.markdown("---")
 
+# Section: Your First Steps
 
 def show_setup():
-    st.header("Your First Steps")
-    st.markdown("**1. Install Anaconda or Miniconda:**")
-    st.write(
-        "- Go to https://www.anaconda.com/products/distribution",
-        "- Download the Python 3.x installer for your OS",
-        "- Follow the on-screen prompts to install",
-        sep="\n"
-    )
-    st.markdown("**2. Create and activate a virtual environment:**")
+    st.header("Your First Steps: Setup Environment")
+    st.subheader("Step 1: Install Anaconda")
+    st.write("1. Go to Anaconda website: https://www.anaconda.com/products/distribution")
+    st.write("2. Download the Python 3.x installer for your OS.")
+    st.write("3. Run the installer and follow prompts.")
+
+    st.subheader("Step 2: Create Virtual Environment")
     st.code(
         """
 conda create -n health_data python=3.9 -y
@@ -105,98 +104,114 @@ pip install streamlit pandas matplotlib plotly
         """,
         language="bash"
     )
-    st.markdown("**3. Launch Jupyter Notebook (optional):**")
-    st.write("Open your terminal or Anaconda Prompt and run:")
-    st.code("jupyter notebook", language="bash")
+
+    st.subheader("Step 3: Verify Installation")
+    st.write("In your terminal, type:`streamlit --version` to confirm Streamlit is installed.")
+    st.write("Then, run:`python -c \"import pandas; print(pandas.__version__)\"` to check Pandas.")
     st.markdown("---")
 
+# Section: Starter Commands
 
 def show_starter_commands():
-    st.header("Starter Commands")
-    st.markdown("Load and preview your health dataset:")
-    code = '''
-import pandas as pd    # Load the Pandas library
-# Read a CSV file into a DataFrame
-df = pd.read_csv("data.csv")
-# Show first 5 rows
-print(df.head())
-# Display summary statistics
-df.describe()
-    '''
-    st.code(code, language="python")
-    st.write(
-        "*Explanation:* `read_csv()` reads your data, `head()` previews it, and `describe()` summarizes numeric columns."
-    )
+    st.header("Starter Commands: Load & Preview Data")
+    st.subheader("Step 1: Import Pandas")
+    st.code("import pandas as pd", language="python")
+
+    st.subheader("Step 2: Read Your Dataset")
+    st.code("df = pd.read_csv('data.csv')", language="python")
+
+    st.subheader("Step 3: Preview Data")
+    st.code("df.head()  # Displays first 5 rows", language="python")
+
+    st.subheader("Step 4: Quick Statistics")
+    st.code("df.describe()  # Summary of numeric columns", language="python")
     st.markdown("---")
 
+# Section: Understanding Data Types
 
 def show_data_types():
     st.header("Understanding Data Types")
-    st.markdown("Pandas uses various data types to represent columns:")
-    st.write(
-        "- **int64:** integer numbers",
-        "- **float64:** decimal numbers",
-        "- **object:** text or mixed types",
-        "- **datetime64[ns]:** dates and times",
-        sep="\n"
-    )
-    st.markdown("**Check and convert types:**")
-    type_code = '''
-# Check column types
-df.dtypes
-# Convert a column to datetime
-df['date'] = pd.to_datetime(df['date'])
-# Convert numeric strings to floats
-df['value'] = df['value'].astype(float)
-    '''
-    st.code(type_code, language="python")
+    st.subheader("Step 1: Check Column Types")
+    st.code("df.dtypes", language="python")
+
+    st.subheader("Step 2: Convert to Datetime")
+    st.code("df['date'] = pd.to_datetime(df['date'])", language="python")
+
+    st.subheader("Step 3: Convert Strings to Numbers")
+    st.code("df['value'] = df['value'].astype(float)", language="python")
     st.markdown("---")
 
+# Section: Customize and Save Plots
 
 def show_customize_plots():
     st.header("Customize and Save Plots")
-    st.markdown("Learn how to style Matplotlib charts and save them:")
-    plot_code = '''
-import matplotlib.pyplot as plt
+    st.subheader("Step 1: Import Matplotlib")
+    st.code("import matplotlib.pyplot as plt", language="python")
 
+    st.subheader("Step 2: Create a Figure")
+    st.code(
+        """
 plt.figure(figsize=(8, 4))
 plt.plot(df['date'], df['cases'], label='Cases', linewidth=2)
+        """,
+        language="python"
+    )
+
+    st.subheader("Step 3: Add Titles and Labels")
+    st.code(
+        """
 plt.title('Daily Cases Over Time')
 plt.xlabel('Date')
 plt.ylabel('Number of Cases')
 plt.legend()
-# Save figure at high resolution
+        """,
+        language="python"
+    )
+
+    st.subheader("Step 4: Save at High Quality")
+    st.code(
+        """
 plt.savefig('daily_cases.png', dpi=300, bbox_inches='tight')
 plt.show()
-    '''
-    st.code(plot_code, language="python")
-    st.write(
-        "*Tip:* Use `figsize`, `label`, and `legend` to make your charts publication-ready."
+        """,
+        language="python"
     )
     st.markdown("---")
 
+# Section: Interactive Charts
 
 def show_interactive():
     st.header("Interactive Charts")
-    st.markdown("Build interactive plots with Plotly Express and embed in Streamlit:")
-    interact_code = '''
-import plotly.express as px
+    st.subheader("Step 1: Import Plotly Express")
+    st.code("import plotly.express as px", language="python")
 
-fig = px.line(df, x='date', y='cases', title='Interactive Case Trend')
-fig.update_layout(template='plotly_white')
-# Display in Jupyter: fig.show()
-# Display in Streamlit:
-st.plotly_chart(fig, use_container_width=True)
-    '''
-    st.code(interact_code, language="python")
-    st.write(
-        "Customize tooltips, colors, and layout via `update_traces()` and `update_layout()`."
+    st.subheader("Step 2: Build Your Figure")
+    st.code(
+        """
+fig = px.line(
+    df,
+    x='date',
+    y='cases',
+    title='Interactive Case Trend'
+)
+        """,
+        language="python"
     )
+
+    st.subheader("Step 3: Customize Aesthetics")
+    st.code("fig.update_layout(template='plotly_white')", language="python")
+
+    st.subheader("Step 4: Display in Streamlit")
+    st.code("st.plotly_chart(fig, use_container_width=True)", language="python")
     st.markdown("---")
 
+# Section: Download eBook
 
 def show_download():
-    st.header("Download the Mini eBook")
+    st.header("Download the Full eBook")
+    st.subheader("Step 1: Ensure PDF Exists")
+    st.write("Place `health_data_python_guide.pdf` in the app directory.")
+    st.subheader("Step 2: Download Button")
     try:
         with open("health_data_python_guide.pdf", "rb") as pdf_file:
             PDFbyte = pdf_file.read()
@@ -207,11 +222,7 @@ def show_download():
             mime="application/pdf"
         )
     except FileNotFoundError:
-        st.error(
-            "PDF guide not found. Please add `health_data_python_guide.pdf` in the app directory."
-        )
-
+        st.error("PDF guide not found. Add `health_data_python_guide.pdf` to the directory.")
 
 if __name__ == "__main__":
     main()
-
