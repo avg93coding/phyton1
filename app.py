@@ -624,28 +624,30 @@ def show_why_python():
     # Comparación con otras herramientas
     st.subheader("Comparación con otras herramientas")
     comparison_data = {
-        "Criterio": ["Curva de aprendizaje", "Flexibilidad", "Reproducibilidad",
-                     "Visualización", "Análisis estadístico", "Automatización", "Costo"],
-        "Python":         ["Moderada", "Muy alta", "Excelente", "Excelente", "Muy bueno", "Excelente", "Gratis"],
-        "R":              ["Moderada", "Alta",    "Excelente", "Muy buena","Excelente", "Buena",     "Gratis"],
-        "Excel":          ["Baja",     "Limitada","Limitada",  "Básica",  "Básica",   "Limitada",  "Pagado"],
-        "SPSS":           ["Baja",     "Limitada","Buena",     "Buena",   "Excelente","Limitada",  "Muy costoso"]
+        "Criterio": [
+            "Curva de aprendizaje", "Flexibilidad", "Reproducibilidad",
+            "Visualización", "Análisis estadístico", "Automatización", "Costo"
+        ],
+        "Python":   ["Moderada", "Muy alta", "Excelente", "Excelente", "Muy bueno", "Excelente", "Gratis"],
+        "R":        ["Moderada", "Alta",    "Excelente", "Muy buena","Excelente",  "Buena",    "Gratis"],
+        "Excel":    ["Baja",     "Limitada","Limitada",  "Básica",  "Básica",    "Limitada", "Pagado"],
+        "SPSS":     ["Baja",     "Limitada","Buena",     "Buena",   "Excelente", "Limitada", "Muy costoso"]
     }
     df = pd.DataFrame(comparison_data)
     st.table(df.set_index("Criterio"))
     st.markdown("---")
 
-    # Beneficios para Profesionales de la Salud
+    # Beneficios visualizados
     st.subheader("Beneficios para Profesionales de la Salud")
     col1, col2 = st.columns([2, 1])
 
     with col1:
         benefits = {
-            "Ahorro de tiempo":     85,
-            "Reproducibilidad":      95,
-            "Análisis complejos":    90,
-            "Automatización":        80,
-            "Visualización avanzada":85
+            "Ahorro de tiempo":      85,
+            "Reproducibilidad":       95,
+            "Análisis complejos":     90,
+            "Automatización":         80,
+            "Visualización avanzada": 85
         }
         fig = go.Figure([
             go.Bar(
@@ -653,7 +655,7 @@ def show_why_python():
                 y=list(benefits.keys()),
                 orientation='h',
                 marker=dict(
-                    color=['#2A9D8F','#E9C46A','#F4A261','#E76F51','#264653'],
+                    color=['#2A9D8F', '#E9C46A', '#F4A261', '#E76F51', '#264653'],
                     line=dict(color='rgba(0,0,0,0.1)', width=1)
                 )
             )
@@ -663,7 +665,8 @@ def show_why_python():
             xaxis_title="Puntuación (%)",
             yaxis=dict(autorange="reversed"),
             template="plotly_white",
-            margin=dict(l=0, r=10, t=30, b=0)
+            margin=dict(l=20, r=20, t=40, b=20),
+            height=400
         )
         st.plotly_chart(fig, use_container_width=True)
 
@@ -684,105 +687,60 @@ def show_why_python():
 
     st.markdown("---")
 
-    # Resto de tu contenido…
-
-        
-fig.update_layout(
-            title='Beneficios de Python (Puntuación sobre 100)',
-            xaxis=dict(
-                title='Puntuación',
-                tickfont=dict(size=12),
-                showgrid=True,
-                gridwidth=1,
-                gridcolor='rgba(0,0,0,0.1)'
-            ),
-            yaxis=dict(
-                title='',
-                tickfont=dict(size=14),
-                showgrid=False
-            ),
-            margin=dict(l=20, r=20, t=40, b=20),
-            height=400,
-            template='simple_white'
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-    with col2:
-        st_lottie(lottie_chart, height=300, key="benefits_animation")
-    
-    st.markdown("---")
-    
-    # Real-world applications
+    # Aplicaciones en el Mundo Real
     st.header("Aplicaciones en el Mundo Real")
-    
-    examples = st.columns(3)
-    
-    with examples[0]:
+    ex1, ex2, ex3 = st.columns(3)
+    with ex1:
         st.markdown("""
         ### 🦠 Epidemiología
-        
-        * Modelado de brotes
-        * Análisis espacial de enfermedades
-        * Predicción de propagación
-        * Visualización de tendencias
+        - Modelado de brotes
+        - Análisis espacial de enfermedades
+        - Predicción de propagación
+        - Visualización de tendencias
         """)
-    
-    with examples[1]:
+    with ex2:
         st.markdown("""
         ### 🏥 Gestión Hospitalaria
-        
-        * Análisis de flujo de pacientes
-        * Optimización de recursos
-        * Predicción de readmisiones
-        * Cuadros de mando en tiempo real
+        - Análisis de flujo de pacientes
+        - Optimización de recursos
+        - Predicción de readmisiones
+        - Dashboards en tiempo real
         """)
-    
-    with examples[2]:
+    with ex3:
         st.markdown("""
         ### 🧬 Investigación Clínica
-        
-        * Análisis de datos de estudios
-        * Procesamiento de datos genómicos
-        * Métodos estadísticos avanzados
-        * Generación de reportes automáticos
+        - Análisis de estudios clínicos
+        - Procesamiento de datos genómicos
+        - Métodos estadísticos avanzados
+        - Reportes automáticos
         """)
-    
-    # Case study
+
+    st.markdown("---")
+
+    # Caso de Estudio
     st.subheader("Caso de Estudio: Análisis COVID-19")
-    
     with st.expander("Ver Ejemplo de Análisis de Datos COVID"):
         st.code("""
-# Análisis básico de datos COVID
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 # Cargar datos
-covid_data = pd.read_csv('covid_data.csv')
+covid_df = pd.read_csv('covid_data.csv', parse_dates=['date'])
 
-# Análisis descriptivo
-summary = covid_data.describe()
+# Resumen estadístico
+print(covid_df.describe())
 
-# Visualización de casos por región
-plt.figure(figsize=(10, 6))
-sns.barplot(x='region', y='cases', data=covid_data)
+# Casos por región
+import seaborn as sns
+sns.barplot(x='region', y='cases', data=covid_df)
 plt.title('Casos COVID por Región')
 plt.xticks(rotation=45)
 plt.tight_layout()
 
-# Análisis de tendencia temporal
-plt.figure(figsize=(12, 6))
-covid_data.groupby('date')['cases'].sum().plot(kind='line')
-plt.title('Evolución de Casos en el Tiempo')
+# Tendencia temporal
+covid_df.groupby('date')['cases'].sum().plot()
+plt.title('Evolución de Casos')
 plt.tight_layout()
+        """, language="python")
 
-# Guardar resultados
-summary.to_csv('covid_summary.csv')
-plt.savefig('covid_trend.png', dpi=300)
-        """)
-    
-    success_box("Con menos de 20 líneas de código, puedes realizar un análisis completo que tomaría horas en Excel.")
+    success_box("Con menos de 20 líneas de código, puedes replicar este análisis que en otros entornos llevaría horas.")
 
 # Section: Environment Setup
 def show_setup():
